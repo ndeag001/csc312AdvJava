@@ -1,62 +1,61 @@
 package csc312;
 
-
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+
 
 public class project1 {
-	public static void main() {
+
+	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
+	//
+	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
+	//
+	public String getURL( String url) throws IOException {
+		//char a = 5;
+		try {
+			URL myURL = new URL( url );
 		
+			HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
+		
+			System.out.println( "requestMethod:"  + urlConnection.getRequestMethod() );
+			System.out.println( "responseCode:"  + urlConnection.getResponseCode()); //404 !!, 200 -> OK
+			System.out.println( "message:"  + urlConnection.getResponseMessage()); 
+		
+			InputStream  is = urlConnection.getInputStream();
+				
+			StringBuffer output = new StringBuffer();
+			int c;
+			  HashMap<String, String> hmap = new HashMap<String, String>();
+			while ( (c = is.read() ) != -1 ) {
+				if ((char) c == '\n'){
+					
+					System.out.println("new Line");
+					hmap.put(output.toString().trim(), null);
+					output= new StringBuffer();
+				}else {
+					output.append((char)c );
+				
+			} 
+			}
+		
+			is.close();
+//			a = output.toString().charAt(0);
+			System.out.println(hmap);
 			
-		String		domainName	  =  " https://wordfinder-001.appspot.com/word.txt";
-
-		try  { 
-
-			String result = project1.listURL( domainName );
-			System.out.println( result );
 			
-		} catch ( Exception e ) {
-			//fail("we got an exception");
+	
+		} catch (MalformedURLException e) {
+		    return null;
+		} catch (IOException e) {
+			return null;
+		
 		}
+//		return null;
+		return null;
+		
 	}
-		
-	
-	public static String listURL(String url) throws Exception {
-		
-		//p. 736
-
-		URL myURL = new URL( url );
-		
-		//what is in an URL: https://docs.oracle.com/javase/7/docs/api/java/net/URL.html
-		
-		
-		//URL connection, to access remote resource
-		
-		//HttpURLConnection 
-		
-		HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
-		
-		System.out.println( "requestMethod:"  + urlConnection.getRequestMethod() );
-		
-		System.out.println( "responseCode:"  + urlConnection.getResponseCode()); //404 !!, 200 -> ok
-		
-		System.out.println( "message:"  + urlConnection.getResponseMessage()); 
-		
-		
-		InputStream  is = urlConnection.getInputStream();
-		
-		//all communication in socket are done in 'byte', java is unicode for String/char
-		
-		StringBuffer output = new StringBuffer();
-		int c;
-		while ( (c = is.read() ) != -1 ) {
-			output.append((char)c );
-		}
-		
-		is.close();
-	
-		return output.toString();
-	
-}
 }
