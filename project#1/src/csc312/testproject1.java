@@ -3,6 +3,7 @@ package csc312;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.junit.Test;
 
@@ -41,7 +42,8 @@ public class testproject1 {
 		
 		project1 proj1 = new project1();
 		
-		String content = proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" );
+		
+		HashMap<String, String> content1 = proj1.getHmap();
 		
 		
 		assertEquals( new Character('c'), proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" ) );
