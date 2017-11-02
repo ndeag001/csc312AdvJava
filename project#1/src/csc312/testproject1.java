@@ -27,7 +27,7 @@ public class testproject1 {
 		
 		String content = proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" );
 		
-		
+
 		assertEquals( new Character('c'), proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" ) );
 		
 	}
@@ -46,8 +46,10 @@ public class testproject1 {
 		HashMap<String, String> content1 = proj1.getHmap();
 		
 		
-		assertEquals( new Character('c'), proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" ) );
+		assertEquals( new Character('c'), proj1.Game(1) );
 		
+	
+	
 	}
 //	@Test
 //	public void testServerError() throws IOException {

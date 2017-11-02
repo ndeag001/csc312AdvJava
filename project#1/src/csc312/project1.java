@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
 
 
@@ -22,10 +24,10 @@ public class project1 {
 		
 			HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
 		
-			System.out.println( "requestMethod:"  + urlConnection.getRequestMethod() );
-			System.out.println( "responseCode:"  + urlConnection.getResponseCode()); //404 !!, 200 -> OK
-			System.out.println( "message:"  + urlConnection.getResponseMessage()); 
-		
+//			System.out.println( "requestMethod:"  + urlConnection.getRequestMethod() );
+//			System.out.println( "responseCode:"  + urlConnection.getResponseCode()); //404 !!, 200 -> OK
+//			System.out.println( "message:"  + urlConnection.getResponseMessage()); 
+//		
 			InputStream  is = urlConnection.getInputStream();
 				
 			StringBuffer output = new StringBuffer();
@@ -65,7 +67,7 @@ public class project1 {
 			hmap.put(tokenizer.nextToken().trim(), null);
 			//values.add( tokenizer.nextToken() );
 		}
-		System.out.println(hmap);
+		//System.out.println(hmap);
 		return null;
 	}
 
@@ -73,17 +75,40 @@ public class project1 {
 		
 		return null;
 	}
-	public void Game ( Integer gameNum ) throws IOException {
+	public Boolean Game ( Integer gameNum ) throws IOException {
 		// Two arrays, each containing 5 string buffers.
 		StringBuffer[] column = new StringBuffer[5];
 		StringBuffer[] rowSB = new StringBuffer[5];
+		ArrayList<String> checks = new ArrayList<String>();
 		String colLetters = "abcde";
 		HashMap<String, String> hmap = getHmap();
-		for (int i=1;i<6;i++) { // gets a1, b1, c1, d1, e1, then a2, b2, ... e5.
-			for (int j=1;j<6;j++) {  //"abcde":
-				Character L = getBoardLetter(gameNum, i, colLetters.charAt(j));
-				// Append letter to the respective string buffers.
-				column[j].append(L);
+		int a = 0;
+		while(a<22) {
+			a++;
+			outerloop:
+				
+			for (int i=1;i<6;i=i+2) { // 12345
+				for (int j=1;j<6;j=j+2) {  //"abcde":
+					checks.add(String.format("%2d,%2d",i,j));
+					
+					
+					
+				}
+				
+				
+			}
+		
+			
+//					Character L = getBoardLetter(gameNum, i, colLetters.charAt(j));
+//					// Append letter to the respective string buffers.
+//					column[j].append(L);
+//					rowSB[i].append(L);
+//					if (Character.isUpperCase(L)){break outerloop;}
+//					else {
+//						L = getBoardLetter(gameNum, i, colLetters.charAt(j+2));
+//						if (Character.isUpperCase(L)){break outerloop;}
+//					}
+					
 //				w = test_success(cols[col], hmap)
 //				if w:
 //					do_success(w);
@@ -94,10 +119,12 @@ public class project1 {
 //					do_success(w);
 //					return; // End
 			}
+		System.out.println(checks);
+		return null;
 		}
 		// Still here? Then no word has been found!
 		// Print fail string or something.
-	}
+//	}
 
 	public Character getBoardLetter(Integer gameNum, int row, char col) throws IOException {
 		
