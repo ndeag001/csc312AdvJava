@@ -24,7 +24,9 @@ public class project1 {
 	public HashMap<String, String> wordsHashMap = new HashMap<String,String>();
 	// To hold board.
 	public ArrayList<BoardPosition>[][] board = new ArrayList[5][5]; 
-	
+	public Comparator<BoardPosition> c = new BoardComparator();
+    public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
+    
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
 	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
@@ -134,15 +136,6 @@ public class project1 {
 		}
 	}
 	/**
-	 * Initialize a priority queue.
-	 * 
-	 * See https://stackoverflow.com/a/683049 for queue overview.
-	 */
-	public void initQueue() {
-		Comparator<BoardPosition> c = new BoardComparator();
-        PriorityQueue<BoardPosition> q = new PriorityQueue<BoardPosition>(10, c);
-	}
-	/**
 	 * Comparator class for the priority queue.
 	 * 
 	 * This will need to check the number of combinations
@@ -153,10 +146,10 @@ public class project1 {
 	    public int compare(BoardPosition p1, BoardPosition p2)
 	    {
 			// Sort numeric descending.
-	        if (p1.numBoardPositions > p2.numBoardPositions) {
-	        	return 1;
-	        } else if (p1.numBoardPositions < p2.numBoardPositions) {
+	        if (p1.numWordCombos > p2.numWordCombos) {
 	        	return -1;
+	        } else if (p1.numWordCombos < p2.numWordCombos) {
+	        	return 1;
 	        } else { // Tied
 	        	return 0;
 	        }
@@ -168,7 +161,7 @@ public class project1 {
 	public class BoardPosition {
 		public int x; // row
 		public int y; // column
-		public int numBoardPositions;
+		public int numWordCombos;
 		BoardPosition (int row, int column) {
 			x = row;
 			y = column;
@@ -208,15 +201,20 @@ public class project1 {
 				n += 1;
 			}
 			System.out.println("x,y, numcombos:"+x+","+y+" "+n);
+			numWordCombos = n;
 		}
 	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
 			for (int j=0;j<5;j++) {  //"abcde":
 				board[i][j] = new ArrayList<BoardPosition>();
-				board[i][j].add(new BoardPosition(i, j)); // Initialize to a null string.
+				BoardPosition n = new BoardPosition(i, j);
+				board[i][j].add(n); // Initialize to a null string.
+				boardPositionsQueue.add(n); // Add to queue.
 			}
 		}
+		BoardPosition top = boardPositionsQueue.element();
+		System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
 	public Character getLetter(int row,char column) {
 		
