@@ -14,6 +14,9 @@ import java.util.StringTokenizer;
 
 public class project1 {
 	// To hold calculated letter probabilities.
+	// Example:
+	// letterProbaHashMap[ "a" ] = 0.0927835
+	// letterProbaHashMap[ "b" ] = 0.02749141
 	public HashMap<Character, Float> letterProbaHashMap = new HashMap<Character, Float>();
 	// To hold all of the possible words.
 	public HashMap<String, String> wordsHashMap = new HashMap<String,String>();
