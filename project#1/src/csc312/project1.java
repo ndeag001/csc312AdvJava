@@ -23,7 +23,8 @@ public class project1 {
 	// To hold all of the possible words.
 	public HashMap<String, String> wordsHashMap = new HashMap<String,String>();
 	// To hold board.
-	public ArrayList<BoardPosition>[][] board = new ArrayList[5][5]; 
+	public ArrayList<BoardPosition>[][] board = new ArrayList[5][5];
+	// For priority queue to decide which position to reveal.
 	public Comparator<BoardPosition> c = new BoardComparator();
     public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
     
@@ -161,11 +162,22 @@ public class project1 {
 	public class BoardPosition {
 		public int x; // row
 		public int y; // column
+		public Character letter;
 		public int numWordCombos;
 		BoardPosition (int row, int column) {
 			x = row;
 			y = column;
 			initializeNumWordCombos();
+		}
+		public void updateNumWordCombos() {
+			// Checks the neighbors to see if word combos still exist.
+			// e.g. _ _ _ = Yes. _ Z _ = No.
+		
+			// if x == 0 and y == 0
+			// 1) spots [0,1] [0,2] must form a word or be blank.
+			// 2) spots [1,0] [2,0] must form a word or be blank.
+			
+			// Question: What are the neighbors of this position?
 		}
 		/**
 		 * Initialize num word combos based on x, y position.
@@ -213,6 +225,7 @@ public class project1 {
 				boardPositionsQueue.add(n); // Add to queue.
 			}
 		}
+		// Trace
 		BoardPosition top = boardPositionsQueue.element();
 		System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
