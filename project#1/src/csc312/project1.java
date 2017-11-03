@@ -91,6 +91,7 @@ public class project1 {
 				// probabilities associated with that word.
 				continue;
 			}
+			// Add letters of the word to probabilites hashmap.
 			wordDictProbaAddLetters(tk);
 		}
 		// Calculate probabilities.
