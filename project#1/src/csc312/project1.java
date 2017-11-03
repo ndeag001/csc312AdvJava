@@ -190,6 +190,27 @@ public class project1 {
 	        }
 	    }
 	}
+	public class WordCombos {
+		public int x;
+		public int y;
+		public int length = 3; // Default game word size.
+		// Three letters
+		public ArrayList<BoardPosition> letters = new ArrayList<BoardPosition>();
+		// Class constructor
+		WordCombos (BoardPosition bp1, BoardPosition bp2, BoardPosition bp3) {
+			letters.add(bp1);
+			letters.add(bp2);
+			letters.add(bp3);
+		}
+		public Boolean legitimateWord() {
+			String wordToCheck = "" + letters.get(0).getLetter() + letters.get(1).getLetter() + letters.get(2).getLetter();
+			if (wordPartsHashMap.containsKey(wordToCheck)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 	/**
 	 * 
 	 */
@@ -199,17 +220,22 @@ public class project1 {
 		public char column_char;
 		public Character letter;
 		public int numWordCombos;
+		// Class constructor
 		BoardPosition (int row, int column) {
 			x = row;
 			y = column;
 			column_char = "abcde".charAt(column);
+			letter = '_'; // Initialize all position to underscore ("_") 
 			initializeNumWordCombos();
 		}
 		public void process() {
 			Character l = getBoardLetter(gameNum, x, column_char);
 			letter = l;
 			// Check neighbors
-			// ...
+			// ... Or combos...
+		}
+		public Character getLetter() {
+			return letter;
 		}
 //		public void getLetter() {
 //			Character l = getBoardLetter(gameNum, x, column_char);
@@ -223,6 +249,7 @@ public class project1 {
 			// 2) spots [1,0] [2,0] must form a word or be blank.
 			
 			// Question: What are the neighbors of this position?
+			// Possible combos...
 		}
 		/**
 		 * Initialize num word combos based on x, y position.
