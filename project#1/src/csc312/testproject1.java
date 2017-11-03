@@ -64,6 +64,8 @@ public class testproject1 {
 		
 		project1 proj1 = new project1();
 		
+		proj1.makeBoard();
+		proj1.getHmap();
 		
 //		HashMap<String, String> content1 = proj1.getHmap();
 //		

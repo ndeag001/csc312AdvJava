@@ -108,7 +108,7 @@ public class project1 {
 		}
 		// Calculate probabilities.
 		wordDictProbaCalculate();
-		
+		System.out.println("There are "+wordPartsHashMap.size()+" possible word combinations");
 		//return null;
 	}
 
@@ -128,10 +128,16 @@ public class project1 {
 	 */
 	public void wordPartsAdd(String w) {
 		// Hmm.
-//		for (int i=0; i<3; i++) {
-//			Character n = w.charAt(i);
-//			wordPartsHashMap.put(n, null);
-//		}
+		// One letter
+		wordPartsHashMap.put(w.charAt(0) + "__", null);
+		wordPartsHashMap.put("_" + w.charAt(1) + "_", null);
+		wordPartsHashMap.put("__" + w.charAt(2), null);
+		
+		// Two letters
+		wordPartsHashMap.put(w.charAt(0) + w.charAt(1) + "_", null);
+		wordPartsHashMap.put(w.charAt(0) + "_" + w.charAt(2), null);
+		wordPartsHashMap.put("_" + w.charAt(1) + w.charAt(2), null);
+		wordPartsHashMap.put(w.charAt(0) + "_" + w.charAt(2), null);
 	}
 	/**
 	 * Updates letterProbaHashMap so that each letter represents the pct% of total letters. 
@@ -237,7 +243,7 @@ public class project1 {
 			} else if (y == 4) {
 				n += 1;
 			}
-			System.out.println("x,y, numcombos:"+x+","+y+" "+n);
+			//System.out.println("x,y, numcombos:"+x+","+y+" "+n);
 			numWordCombos = n;
 		}
 	}
