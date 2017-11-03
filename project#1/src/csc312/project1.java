@@ -22,6 +22,8 @@ public class project1 {
 	public HashMap<Character, Float> letterProbaHashMap = new HashMap<Character, Float>();
 	// To hold all of the possible words.
 	public HashMap<String, String> wordsHashMap = new HashMap<String,String>();
+	// To hold all iterations of words.
+	public HashMap<String, String> wordPartsHashMap = new HashMap<String,String>();
 	// To hold board.
 	public ArrayList<BoardPosition>[][] board = new ArrayList[5][5];
 	// For priority queue to decide which position to reveal.
@@ -89,7 +91,8 @@ public class project1 {
 		while ( tokenizer.hasMoreTokens() ) {
 			String tk = tokenizer.nextToken().trim();
 			String oldKey = wordsHashMap.put(tk, null);
-			// Put returns:
+			wordPartsAdd(tk); // Add word to wordPartsHashMap. 
+			// wordsHashMap.put returns:
 			// The previous value associated with key,
 			// or null if there was no mapping for key.
 			// (A null return can also indicate that the map previously associated null with key.)
@@ -107,6 +110,27 @@ public class project1 {
 		wordDictProbaCalculate();
 		
 		//return null;
+	}
+
+	/**
+	 * Updates wordPartsHashMap to add new word combos.
+	 * 
+	 * Make the parts of word hashmap.
+	 * Enables ability to check if parts of words are viable, e.g. "j _ _".
+	 * Ex:
+	 *  j _ _
+	 *  j o _
+	 *  j o b
+	 *  _ o _
+	 *  _ o b
+	 *  _ _ b
+	 */
+	public void wordPartsAdd(String w) {
+		// Hmm.
+//		for (int i=0; i<3; i++) {
+//			Character n = w.charAt(i);
+//			wordsHashMap.put(tk, null);
+//		}
 	}
 	/**
 	 * Updates letterProbaHashMap so that each letter represents the pct% of total letters. 
