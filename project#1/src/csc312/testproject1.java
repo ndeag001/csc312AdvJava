@@ -65,7 +65,9 @@ public class testproject1 {
 		project1 proj1 = new project1();
 		
 		proj1.makeBoard();
+		// Populates priority queue
 		proj1.getHmap();
+		proj1.solve();
 		
 //		HashMap<String, String> content1 = proj1.getHmap();
 //		

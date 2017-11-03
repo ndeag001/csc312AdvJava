@@ -29,12 +29,14 @@ public class project1 {
 	// For priority queue to decide which position to reveal.
 	public Comparator<BoardPosition> c = new BoardComparator();
     public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
+    // To be updated by caller (default=1).
+    public int gameNum = 1;
     
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
 	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
 	//
-	public String getURL( String url) throws IOException {
+	public String getURL( String url) {
 		//char a = 5;
 		try {
 			URL myURL = new URL( url );
@@ -71,6 +73,8 @@ public class project1 {
 		} catch (IOException e) {
 			return null;
 		
+		} catch (Exception e) {
+			return null;
 		}
 //		return null;
 		
@@ -85,7 +89,7 @@ public class project1 {
 	 * @return void
 	 * @throws IOException
 	 */
-	public void getHmap() throws IOException {
+	public void getHmap() {
 		String content = getURL( "https://wordfinder-001.appspot.com/word.txt" );
 		StringTokenizer tokenizer = new StringTokenizer( content, "\n" );
 		while ( tokenizer.hasMoreTokens() ) {
@@ -127,7 +131,6 @@ public class project1 {
 	 *  j _ b
 	 */
 	public void wordPartsAdd(String w) {
-		// Hmm.
 		// One letter
 		wordPartsHashMap.put(w.charAt(0) + "__", null);
 		wordPartsHashMap.put("_" + w.charAt(1) + "_", null);
@@ -193,13 +196,24 @@ public class project1 {
 	public class BoardPosition {
 		public int x; // row
 		public int y; // column
+		public char column_char;
 		public Character letter;
 		public int numWordCombos;
 		BoardPosition (int row, int column) {
 			x = row;
 			y = column;
+			column_char = "abcde".charAt(column);
 			initializeNumWordCombos();
 		}
+		public void process() {
+			Character l = getBoardLetter(gameNum, x, column_char);
+			letter = l;
+			// Check neighbors
+			// ...
+		}
+//		public void getLetter() {
+//			Character l = getBoardLetter(gameNum, x, column_char);
+//		}
 		public void updateNumWordCombos() {
 			// Checks the neighbors to see if word combos still exist.
 			// e.g. _ _ _ = Yes. _ Z _ = No.
@@ -260,6 +274,21 @@ public class project1 {
 		BoardPosition top = boardPositionsQueue.element();
 		System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
+	public void solve() {
+//		Boolean solved = false;
+//		while (!solved) {
+//			// ...
+//		}
+		
+		// Get a letter
+		try {
+			BoardPosition top = boardPositionsQueue.remove();
+			System.out.println("Chose:"+top.x+","+top.y);
+			top.process();
+		} catch (Exception e) { // empty queue
+		
+		} 
+	}
 	public Character getLetter(int row,char column) {
 		
 		return null;
@@ -315,7 +344,7 @@ public class project1 {
 		// Print fail string or something.
 //	}
 
-	public Character getBoardLetter(Integer gameNum, int row, char col) throws IOException {
+	public Character getBoardLetter(int gameNum, int row, char col) {
 		
 		String v = getURL("https://wordfinder-001.appspot.com/wordfinder?game="+gameNum+"&pos="+col+row);
 		
