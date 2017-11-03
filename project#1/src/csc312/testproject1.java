@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
@@ -33,6 +34,19 @@ public class testproject1 {
 	}
 	
 	@Test
+	public void testLetterProbabilities() throws IOException {
+		
+		project1 proj1 = new project1();
+		
+		// Set wordsHashMap.
+		// Set letterProbaHashMap.
+		proj1.getHmap();
+		
+		System.out.println("The letter probabilities in the game are:\n"+proj1.letterProbaHashMap);
+				
+	}
+	
+	@Test
 	public void testAll() throws IOException {
 		
 		// 1 geturl, gethmap()
@@ -43,10 +57,10 @@ public class testproject1 {
 		project1 proj1 = new project1();
 		
 		
-		HashMap<String, String> content1 = proj1.getHmap();
-		
-		
-		assertEquals( new Character('c'), proj1.Game(1) );
+//		HashMap<String, String> content1 = proj1.getHmap();
+//		
+//		
+//		assertEquals( new Character('c'), proj1.Game(1) );
 		
 	
 	

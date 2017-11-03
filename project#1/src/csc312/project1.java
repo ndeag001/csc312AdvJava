@@ -8,11 +8,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 
 public class project1 {
-
+	// To hold calculated letter probabilities.
+	public HashMap<Character, Float> letterProbaHashMap = new HashMap<Character, Float>();
+	// To hold all of the possible words.
+	public HashMap<String, String> wordsHashMap = new HashMap<String,String>();
+	
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
 	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
@@ -59,18 +64,69 @@ public class project1 {
 		
 		
 	}
-	public HashMap<String, String> getHmap() throws IOException {
+	/**
+	 * This function does the initial word things for a game.
+	 * 
+	 * Sets the private class hashmap letterProbaHashMap.
+	 * Sets the private class hashmap wordsHashMap.
+	 * 
+	 * @return void
+	 * @throws IOException
+	 */
+	public void getHmap() throws IOException {
 		String content = getURL( "https://wordfinder-001.appspot.com/word.txt" );
-		HashMap<String, String> hmap = new HashMap<String, String>();
-			StringTokenizer tokenizer = new StringTokenizer( content, "\n" );
+		StringTokenizer tokenizer = new StringTokenizer( content, "\n" );
 		while ( tokenizer.hasMoreTokens() ) {
-			hmap.put(tokenizer.nextToken().trim(), null);
-			//values.add( tokenizer.nextToken() );
+			String tk = tokenizer.nextToken().trim();
+			System.out.println(tk);
+			String oldKey = wordsHashMap.put(tk, null);
+			// Put returns:
+			// The previous value associated with key,
+			// or null if there was no mapping for key.
+			// (A null return can also indicate that the map previously associated null with key.)
+			if (oldKey != null) {
+				// If oldKey is not null then this word is a duplicate!
+				// In which case, do not go through the counting letter steps below.
+				// Counting the same word again would increase the letter
+				// probabilities associated with that word.
+				continue;
+			}
+			wordDictProbaAddLetters(tk);
 		}
-		//System.out.println(hmap);
-		return null;
+		// Calculate probabilities.
+		wordDictProbaCalculate();
+		
+		//return null;
 	}
-
+	/**
+	 * Updates letterProbaHashMap so that each letter represents the pct% of total letters. 
+	 */
+	public void wordDictProbaCalculate() {
+		// Calculate probabilities. Note: Each word has three letters.
+		int totalLetters = wordsHashMap.size() * 3;
+		for (Entry<Character, Float> entry : letterProbaHashMap.entrySet()) {
+		    Character key = entry.getKey();
+		    Float value = entry.getValue();
+		    letterProbaHashMap.put(key, value / totalLetters);
+		}
+	}
+	public void wordDictProbaAddLetters(String word) {
+		// Add letters to letter probability hash map.
+		// There are typically three letters per word.
+		for (int i=0; i<word.length(); i++) {
+			Character l = word.charAt(i);
+			// putIfAbsent:
+			// If the specified key is not already associated with
+			// a value (or is mapped to null) associates it with the
+			// given value and returns null, else returns the current value.
+			Float val = letterProbaHashMap.putIfAbsent(l, (float) 1);
+			if (val != null) {
+				Float newVal = val+1;
+				letterProbaHashMap.put(l, newVal);
+			}
+		}
+	}
+	
 	public Character getLetter(int row,char column) {
 		
 		return null;
@@ -81,7 +137,7 @@ public class project1 {
 		StringBuffer[] rowSB = new StringBuffer[5];
 		ArrayList<String> checks = new ArrayList<String>();
 		String colLetters = "abcde";
-		HashMap<String, String> hmap = getHmap();
+		//HashMap<String, String> hmap = getHmap();
 		int a = 0;
 		while(a<22) {
 			a++;
