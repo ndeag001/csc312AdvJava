@@ -130,7 +130,7 @@ public class project1 {
 		// Hmm.
 //		for (int i=0; i<3; i++) {
 //			Character n = w.charAt(i);
-//			wordsHashMap.put(tk, null);
+//			wordPartsHashMap.put(n, null);
 //		}
 	}
 	/**
