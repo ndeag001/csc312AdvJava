@@ -166,16 +166,55 @@ public class project1 {
 	 * 
 	 */
 	public class BoardPosition {
-		public Integer x;
-		public Integer y;
-		public Integer numBoardPositions;
+		public int x; // row
+		public int y; // column
+		public int numBoardPositions;
+		BoardPosition (int row, int column) {
+			x = row;
+			y = column;
+			initializeNumWordCombos();
+		}
+		/**
+		 * Initialize num word combos based on x, y position.
+		 * 
+		 * 2 3 4 3 2
+		 * 3 4 5 4 3
+		 * 4 5 6 5 4
+		 * 3 4 5 4 3
+		 * 2 3 4 3 2
+		 */
+		public void initializeNumWordCombos() {
+			int n = 0;
+			if (x == 0) {
+				n += 1;
+			} else if (x == 1) {
+				n += 2;
+			} else if (x == 2) {
+				n += 3;
+			} else if (x == 3) {
+				n += 2;
+			} else if (x == 4) {
+				n += 1;
+			}
+			if (y == 0) {
+				n += 1;
+			} else if (y == 1) {
+				n += 2;
+			} else if (y == 2) {
+				n += 3;
+			} else if (y == 3) {
+				n += 2;
+			} else if (y == 4) {
+				n += 1;
+			}
+			System.out.println("x,y, numcombos:"+x+","+y+" "+n);
+		}
 	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
 			for (int j=0;j<5;j++) {  //"abcde":
 				board[i][j] = new ArrayList<BoardPosition>();
-				board[i][j].add(null); // Initialize to a null string.
-				//System.out.println(board[0][0].get(0));
+				board[i][j].add(new BoardPosition(i, j)); // Initialize to a null string.
 			}
 		}
 	}
