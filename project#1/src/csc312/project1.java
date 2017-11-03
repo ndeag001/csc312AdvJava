@@ -20,6 +20,8 @@ public class project1 {
 	public HashMap<Character, Float> letterProbaHashMap = new HashMap<Character, Float>();
 	// To hold all of the possible words.
 	public HashMap<String, String> wordsHashMap = new HashMap<String,String>();
+	// To hold board.
+	public Integer board[][] = new Integer[5][5]; //new List<Integer,String>(); 
 	
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
@@ -130,6 +132,13 @@ public class project1 {
 		}
 	}
 	
+	public void makeBoard() {
+		for (int i=0;i<5;i++) { // 12345
+			for (int j=0;j<5;j++) {  //"abcde":
+				board[i][j] = 0;
+			}
+		}
+	}
 	public Character getLetter(int row,char column) {
 		
 		return null;

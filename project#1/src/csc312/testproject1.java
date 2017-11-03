@@ -47,6 +47,14 @@ public class testproject1 {
 	}
 	
 	@Test
+	public void testMakeBoard() {
+		
+		project1 proj1 = new project1();
+		proj1.makeBoard();
+		System.out.println("The board is:\n"+proj1.board);
+	}
+	
+	@Test
 	public void testAll() throws IOException {
 		
 		// 1 geturl, gethmap()
