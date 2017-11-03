@@ -31,6 +31,8 @@ public class project1 {
     public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
     // To be updated by caller (default=1).
     public int gameNum = 1;
+    // To hold all BoardWordCombos
+    public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
     
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
@@ -190,14 +192,14 @@ public class project1 {
 	        }
 	    }
 	}
-	public class WordCombos {
+	public class BoardWordCombo {
 		public int x;
 		public int y;
 		public int length = 3; // Default game word size.
 		// Three letters
 		public ArrayList<BoardPosition> letters = new ArrayList<BoardPosition>();
 		// Class constructor
-		WordCombos (BoardPosition bp1, BoardPosition bp2, BoardPosition bp3) {
+		BoardWordCombo (BoardPosition bp1, BoardPosition bp2, BoardPosition bp3) {
 			letters.add(bp1);
 			letters.add(bp2);
 			letters.add(bp3);
@@ -220,6 +222,7 @@ public class project1 {
 		public char column_char;
 		public Character letter;
 		public int numWordCombos;
+		public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
 		// Class constructor
 		BoardPosition (int row, int column) {
 			x = row;
@@ -233,6 +236,10 @@ public class project1 {
 			letter = l;
 			// Check neighbors
 			// ... Or combos...
+		}
+		public void addBWCs(BoardWordCombo bwc1, BoardWordCombo bwc2) {
+			boardWordCombos.add(bwc1);
+			boardWordCombos.add(bwc2);
 		}
 		public Character getLetter() {
 			return letter;
@@ -297,6 +304,36 @@ public class project1 {
 				boardPositionsQueue.add(n); // Add to queue.
 			}
 		}
+		// Add a BoardWordCombos for i <= 2 and j <= 2.
+		// There is a down and an across BWC for each respective position.
+		for (int i=0;i<3;i++) { // 12345
+			for (int j=0;j<3;j++) {  //"abcde":
+				// Across
+				BoardWordCombo bwc1 = new BoardWordCombo(
+						board[i][j].get(0), board[i][j+1].get(0), board[i][j+2].get(0));
+				// Down
+				BoardWordCombo bwc2 = new BoardWordCombo(
+						board[i][j].get(0), board[i+1][j].get(0), board[i+2][j].get(0));
+				// Add BWCs to global variable.
+				boardWordCombos.add(bwc1);
+				boardWordCombos.add(bwc2);
+				// Notify BoardPosition elements of their inclusion in BWCs.
+				board[i][j].get(0).addBWCs(bwc1, bwc2);
+				board[i][j+1].get(0).addBWCs(bwc1, bwc2);
+				board[i][j+2].get(0).addBWCs(bwc1, bwc2);
+				board[i+1][j].get(0).addBWCs(bwc1, bwc2);
+				board[i+2][j].get(0).addBWCs(bwc1, bwc2);
+				
+//				board[i][j+1].get(0)
+//				board[i][j+2].get(0)
+//				board[i][j].get(0)
+//				board[i+1][j].get(0)
+//				board[i+2][j].get(0)
+				
+			}
+		}
+		// At this point board positions could calculate their own NumWordCombos score.
+		// 
 		// Trace
 		BoardPosition top = boardPositionsQueue.element();
 		System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
