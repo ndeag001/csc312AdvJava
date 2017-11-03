@@ -124,6 +124,7 @@ public class project1 {
 	 *  _ o _
 	 *  _ o b
 	 *  _ _ b
+	 *  j _ b
 	 */
 	public void wordPartsAdd(String w) {
 		// Hmm.
