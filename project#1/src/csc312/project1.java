@@ -78,7 +78,6 @@ public class project1 {
 		StringTokenizer tokenizer = new StringTokenizer( content, "\n" );
 		while ( tokenizer.hasMoreTokens() ) {
 			String tk = tokenizer.nextToken().trim();
-			System.out.println(tk);
 			String oldKey = wordsHashMap.put(tk, null);
 			// Put returns:
 			// The previous value associated with key,
