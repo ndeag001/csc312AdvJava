@@ -248,6 +248,10 @@ public class project1 {
 				System.out.println("Found 2/3 of a match:" +w);
 				tmp.bumpPosInQueue = true;
 				return tmp;
+			} else if (x==2) {
+				// One letter found out of three.
+				// This could bump up the BoardPosition's queue value
+				// by half as much as when 2/3 letters are found. 
 			}
 			return null;
 		}
