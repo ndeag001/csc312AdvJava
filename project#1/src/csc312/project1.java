@@ -30,7 +30,7 @@ public class project1 {
 	public ArrayList<BoardPosition>[][] board = new ArrayList[5][5];
 	// For priority queue to decide which position to reveal.
 	public Comparator<BoardPosition> c = new BoardComparator();
-	public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
+	public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(25, c);
 	// To be updated by caller (default=1).
 	public int gameNum;
 	// To hold all BoardWordCombos
