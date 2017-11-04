@@ -322,8 +322,9 @@ public class project1 {
 			numWordCombos = boardWordCombos.size();
 			if (bumpPosInQueue) {
 				// Question: How much to bump up?
-				// Answer: There was a neglible difference from 2-4.
-				// Conclusion: May not useful.
+				// Answer: There was a negligible difference when
+				//		   increasing priority queue score anywhere from 2-4 points.
+				// Conclusion: May not be useful.
 				// numWordCombos += 4;
 				
 				// Do nothing.
