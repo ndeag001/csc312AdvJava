@@ -387,9 +387,9 @@ public class project1 {
 			}
 		}
 		
-		// Add a BoardWordCombo for i <= 2 and j <= 2.
-		// There is a down and an across BWC starting from each
-		// of these positions.
+		// Add all possible BoardWordCombos.
+		// There are down BWCs starting as far down as row 2.
+		// There are across BWCs starting as far to the right as column c.
 		for (int i=0;i<5;i++) { // 12345 // row
 			for (int j=0;j<5;j++) {  // "abcde" // column
 				
