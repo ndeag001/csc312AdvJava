@@ -32,7 +32,7 @@ public class project1 {
 	public Comparator<BoardPosition> c = new BoardComparator();
     public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
     // To be updated by caller (default=1).
-    public int gameNum = 2;
+    public int gameNum;
     // To hold all BoardWordCombos
     public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
     // To hold boolean game over.
@@ -277,7 +277,7 @@ public class project1 {
 					}
 				}
 			}
-			// Remove from this isntance of BoardPosition.
+			// Remove from this instance of BoardPosition.
 			boardWordCombos.removeAll(found);
 			
 			// Update priority value for board positions.
@@ -414,8 +414,9 @@ public class project1 {
 		//System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
 	public void solve() {
+		showBoard();
 		while (boardPositionsQueue.size() > 0 && !solved) {
-			showBoard();
+			//showBoard();
 			
 			BoardPosition top = boardPositionsQueue.poll();
 			if (top != null && top.boardWordCombos.size() > 0) {
@@ -423,7 +424,7 @@ public class project1 {
 				System.out.println("Having #BWCs: "+top.boardWordCombos.size());
 				top.process();
 				
-				//showBoard();
+				showBoard();
 			} else {
 				break;
 			}
