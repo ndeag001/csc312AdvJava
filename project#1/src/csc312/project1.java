@@ -32,12 +32,11 @@ public class project1 {
 	public Comparator<BoardPosition> c = new BoardComparator();
     public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
     // To be updated by caller (default=1).
-    public int gameNum = 1;
+    public int gameNum = 2;
     // To hold all BoardWordCombos
     public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
-    
-    public HashMap<BoardPosition, Integer> tQueue = new HashMap<BoardPosition, Integer>();
-    public BoardPosition tQueueTop;
+    // To hold boolean game over.
+    public Boolean solved = false;
     
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
@@ -49,7 +48,14 @@ public class project1 {
 			URL myURL = new URL( url );
 		
 			HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
-		
+			
+			// Set timeout to 4 seconds
+			// Then quit and try again.
+			urlConnection.setConnectTimeout(4000);
+			urlConnection.setReadTimeout(4000);
+			if (urlConnection.getResponseCode() != 200) {
+				return getURL(url);
+			}
 //			System.out.println( "requestMethod:"  + urlConnection.getRequestMethod() );
 //			System.out.println( "responseCode:"  + urlConnection.getResponseCode()); //404 !!, 200 -> OK
 //			System.out.println( "message:"  + urlConnection.getResponseMessage()); 
@@ -75,17 +81,15 @@ public class project1 {
 			
 			
 	
-		} catch (MalformedURLException e) {
-		    return null;
-		} catch (IOException e) {
-			return null;
-		
+//		} catch (MalformedURLException e) {
+//		    return null;
+//		} catch (IOException e) {
+//			return null;
 		} catch (Exception e) {
-			return null;
+			System.out.println(e);
+			System.out.println(url);
+			return getURL(url);
 		}
-//		return null;
-		
-		
 	}
 	/**
 	 * This function does the initial word things for a game.
@@ -119,8 +123,7 @@ public class project1 {
 		}
 		// Calculate probabilities.
 		wordDictProbaCalculate();
-		System.out.println("There are "+wordPartsHashMap.size()+" possible word combinations");
-		//return null;
+		//System.out.println("There are "+wordPartsHashMap.size()+" possible word combinations");
 	}
 
 	/**
@@ -136,18 +139,20 @@ public class project1 {
 	 *  _ o b
 	 *  _ _ b
 	 *  j _ b
+	 *  Note: Strings beginning with w.charAt(0) must begin instead with "".
 	 */
 	public void wordPartsAdd(String w) {
 		// One letter
-		wordPartsHashMap.put(w.charAt(0) + "__", null);
+		wordPartsHashMap.put(""+w.charAt(0) + "__", null);
 		wordPartsHashMap.put("_" + w.charAt(1) + "_", null);
 		wordPartsHashMap.put("__" + w.charAt(2), null);
 		
 		// Two letters
-		wordPartsHashMap.put(w.charAt(0) + w.charAt(1) + "_", null);
-		wordPartsHashMap.put(w.charAt(0) + "_" + w.charAt(2), null);
+		wordPartsHashMap.put(""+w.charAt(0) + w.charAt(1) + "_", null);
+		wordPartsHashMap.put(""+w.charAt(0) + "_" + w.charAt(2), null);
 		wordPartsHashMap.put("_" + w.charAt(1) + w.charAt(2), null);
-		wordPartsHashMap.put(w.charAt(0) + "_" + w.charAt(2), null);
+		wordPartsHashMap.put(""+w.charAt(0) + "_" + w.charAt(2), null);
+		
 	}
 	/**
 	 * Updates letterProbaHashMap so that each letter represents the pct% of total letters. 
@@ -213,26 +218,22 @@ public class project1 {
 			y = yy;
 			direction = dir;
 		}
-		public void checkWord() {
-			if (!legitimateWord()) {
-				// Delete stuff here.
-				System.out.println("Removing bwc:"+this);
-				//boardWordCombos
-				for (BoardPosition i : letters) {
-					i.boardWordCombos.remove(this);
-					System.out.println("Removing bwc from:"+i);
-					// recount
-				}
-			}
-		}
 		public Boolean legitimateWord() {
 			String wordToCheck = "" + letters.get(0).getLetter() + letters.get(1).getLetter() + letters.get(2).getLetter();
-			if (wordPartsHashMap.containsKey(wordToCheck)) {
+			if (wordsHashMap.containsKey(wordToCheck)) {
+				// Found solution.
+				quitGame(wordToCheck, letters.get(0).getBoardPos(), letters.get(2).getBoardPos());
+				return true;
+			} else if (wordPartsHashMap.containsKey(wordToCheck)) {
 				return true;
 			} else {
 				return false;
 			}
 		}
+	}
+	public void quitGame(String word, String s, String e) {
+		System.out.println("game"+gameNum+" word:"+word+" location:"+s+"-"+e);
+		solved = true;
 	}
 	/**
 	 * 
@@ -252,8 +253,11 @@ public class project1 {
 			letter = '_'; // Initialize all position to underscore ("_") 
 			initializeNumWordCombos();
 		}
+		public String getBoardPos() {
+			return "" + (x+1) + column_char;
+		}
 		public void process() {
-			letter = getBoardLetter(gameNum, x, column_char);
+			letter = getBoardLetter(gameNum, x+1, column_char);
 			System.out.println("Got:"+letter);
 			// Process board word combos. Remove from BoardPositions.
 			List<BoardWordCombo> found = new ArrayList<BoardWordCombo>();
@@ -262,9 +266,7 @@ public class project1 {
 			Set<BoardPosition> dirty = new LinkedHashSet<BoardPosition>();
 			for (BoardWordCombo bwc : boardWordCombos) {
 				if (!bwc.legitimateWord()) {
-					System.out.println("invalid combo!");
 					for (BoardPosition bp : bwc.letters ) {
-						//System.out.println("removing combo from bp:"+bp.x+","+bp.y);
 						if (bp == this) {
 							// Collect and remove
 							found.add(bwc);
@@ -275,7 +277,7 @@ public class project1 {
 					}
 				}
 			}
-			// Remove from this.
+			// Remove from this isntance of BoardPosition.
 			boardWordCombos.removeAll(found);
 			
 			// Update priority value for board positions.
@@ -300,9 +302,6 @@ public class project1 {
 		public Character getLetter() {
 			return letter;
 		}
-//		public void getLetter() {
-//			Character l = getBoardLetter(gameNum, x, column_char);
-//		}
 		public void updateNumWordCombos() {
 			// Checks the neighbors to see if word combos still exist.
 			// e.g. _ _ _ = Yes. _ Z _ = No.
@@ -349,7 +348,6 @@ public class project1 {
 			} else if (y == 4) {
 				n += 1;
 			}
-			//System.out.println("x,y, numcombos:"+x+","+y+" "+n);
 			numWordCombos = n;
 		}
 	}
@@ -379,7 +377,6 @@ public class project1 {
 		// of these positions.
 		for (int i=0;i<5;i++) { // 12345 // row
 			for (int j=0;j<5;j++) {  // "abcde" // column
-				//System.out.println("Adding bwcs for:"+i+","+j);
 				
 				// Down 
 				// For col 0-4, row 0-2, add down-facing combos. 
@@ -417,46 +414,56 @@ public class project1 {
 		//System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
 	public void solve() {
-//		Boolean solved = false;
-//		while (!solved) {
-//			// ...
-//		}
-		
-		// Get a letter
-		try {
+		while (boardPositionsQueue.size() > 0 && !solved) {
 			showBoard();
 			
 			BoardPosition top = boardPositionsQueue.poll();
-			System.out.println("Chose:"+top.x+","+top.y);
-			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-			top.process();
-			
-			showBoard();
-			
-//			for (BoardPosition i : boardPositionsQueue) {
-//				System.out.println("bpq: "+i.x +","+ i.y+","+i.boardWordCombos.size());
-//			}
-			
-			// Try next
-			top = boardPositionsQueue.poll();
-			System.out.println("Chose:"+top.x+","+top.y);
-			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-			top.process();
-			
-			showBoard();
-			
-			// Try next
-			top = boardPositionsQueue.poll();
-			System.out.println("Chose:"+top.x+","+top.y);
-			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-			top.process();
-			
-			showBoard();
-			
-			
-		} catch (Exception e) { // empty queue
+			if (top != null && top.boardWordCombos.size() > 0) {
+				System.out.println("Chose:"+top.x+","+top.y);
+				System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+				top.process();
+				
+				//showBoard();
+			} else {
+				break;
+			}
+		}
 		
-		} 
+		// Get a letter
+//		try {
+//			showBoard();
+//			
+//			BoardPosition top = boardPositionsQueue.poll();
+//			System.out.println("Chose:"+top.x+","+top.y);
+//			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+//			top.process();
+//			
+//			showBoard();
+//			
+////			for (BoardPosition i : boardPositionsQueue) {
+////				System.out.println("bpq: "+i.x +","+ i.y+","+i.boardWordCombos.size());
+////			}
+//			
+//			// Try next
+//			top = boardPositionsQueue.poll();
+//			System.out.println("Chose:"+top.x+","+top.y);
+//			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+//			top.process();
+//			
+//			showBoard();
+//			
+//			// Try next
+//			top = boardPositionsQueue.poll();
+//			System.out.println("Chose:"+top.x+","+top.y);
+//			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+//			top.process();
+//			
+//			showBoard();
+//			
+//			
+//		} catch (Exception e) { // empty queue
+//		
+//		} 
 	}
 	public Character getLetter(int row,char column) {
 		
