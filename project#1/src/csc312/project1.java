@@ -307,11 +307,11 @@ public class project1 {
 			}
 			// Remove from this instance of BoardPosition.
 			boardWordCombos.removeAll(found);
-			
-			// Update priority value for board positions.
+			// Update priority value for other board positions.
 			for (BoardPosition bp : dirty) {
 				bp.updateNumWordCombos();
 			}
+			// Update this instance of BoardPostion.
 			updateNumWordCombos();
 			
 			// Remove from queue and re-add the dirty board positions to update their priority.
@@ -319,13 +319,11 @@ public class project1 {
 			// 		 Java priority queue does not support (nor optimize) updating priorities.
 			boardPositionsQueue.removeAll(dirty);
 			boardPositionsQueue.addAll(dirty);
-			
 			// Remove last queue element and re-add to get queue to put top element on top again.
 			BoardPosition test = new BoardPosition(0,0);
 			test.numWordCombos = 999999;
 			boardPositionsQueue.add(test);
 			boardPositionsQueue.remove();
-			
 		}
 		public void addBWCs(BoardWordCombo bwc) {
 			boardWordCombos.add(bwc);
