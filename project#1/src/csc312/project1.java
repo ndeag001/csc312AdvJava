@@ -276,7 +276,7 @@ public class project1 {
 			initializeNumWordCombos();
 		}
 		public String getBoardPos() {
-			return "" + (x+1) + column_char;
+			return "" + column_char + (x+1);
 		}
 		public void process() {
 			letter = getBoardLetter(gameNum, x+1, column_char);
@@ -450,7 +450,7 @@ public class project1 {
 			
 			BoardPosition top = boardPositionsQueue.poll();
 			if (top != null && top.boardWordCombos.size() > 0) {
-				System.out.println("Chose:"+top.x+","+top.y);
+				System.out.println("Chose:"+top.getBoardPos());
 				System.out.println("Having #BWCs: "+top.boardWordCombos.size());
 				top.process();
 				
