@@ -8,9 +8,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 
@@ -208,6 +210,18 @@ public class project1 {
 			y = yy;
 			direction = dir;
 		}
+		public void checkWord() {
+			if (!legitimateWord()) {
+				// Delete stuff here.
+				System.out.println("Removing bwc:"+this);
+				//boardWordCombos
+				for (BoardPosition i : letters) {
+					i.boardWordCombos.remove(this);
+					System.out.println("Removing bwc from:"+i);
+					// recount
+				}
+			}
+		}
 		public Boolean legitimateWord() {
 			String wordToCheck = "" + letters.get(0).getLetter() + letters.get(1).getLetter() + letters.get(2).getLetter();
 			if (wordPartsHashMap.containsKey(wordToCheck)) {
@@ -236,15 +250,44 @@ public class project1 {
 			initializeNumWordCombos();
 		}
 		public void process() {
-			Character l = getBoardLetter(gameNum, x, column_char);
-			letter = l;
-			System.out.println("Got:"+l);
+			letter = getBoardLetter(gameNum, x, column_char);
+			System.out.println("Got:"+letter);
+			// Process board word combos. Remove from BoardPositions.
+			List<BoardWordCombo> found = new ArrayList<BoardWordCombo>();
+			// Maintain a set of "dirty" board positions which
+			// will need to be re-ordered in the priority queue.
+			Set<BoardPosition> dirty = new LinkedHashSet<BoardPosition>();
+			for (BoardWordCombo bwc : boardWordCombos) {
+				if (!bwc.legitimateWord()) {
+					System.out.println("invalid combo!");
+					for (BoardPosition bp : bwc.letters ) {
+						//System.out.println("removing combo from bp:"+bp.x+","+bp.y);
+						dirty.add(bp);
+						if (bp == this) {
+							// Collect and remove
+							found.add(bwc);
+							continue; // Do this one after loop is complete.
+						}
+						bp.boardWordCombos.remove(bwc);
+					}
+				}
+			}
+			boardWordCombos.removeAll(found);
+			// Update priority value for board positions.
+			for (BoardPosition bp : dirty) {
+				bp.updateNumWordCombos();
+			}
+			// Remove from queue and re-add the dirty board positions.
+			boardPositionsQueue.removeAll(dirty);
+			boardPositionsQueue.addAll(dirty);
+			
+			
 			// Check neighbors
 			// ... Or combos...
+			//ArrayList<>
 		}
-		public void addBWCs(BoardWordCombo bwc) { //, BoardWordCombo bwc2
+		public void addBWCs(BoardWordCombo bwc) {
 			boardWordCombos.add(bwc);
-			//boardWordCombos.add(bwc2);
 		}
 		public Character getLetter() {
 			return letter;
@@ -262,6 +305,8 @@ public class project1 {
 			
 			// Question: What are the neighbors of this position?
 			// Possible combos...
+			numWordCombos = boardWordCombos.size();
+			// Tell queue to re-sort this.
 		}
 		/**
 		 * Initialize num word combos based on x, y position.
@@ -302,7 +347,7 @@ public class project1 {
 	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
-			for (int j=0;j<5;j++) {  //"abcde":
+			for (int j=0;j<5;j++) {  // "abcde":
 				board[i][j] = new ArrayList<BoardPosition>();
 				BoardPosition n = new BoardPosition(i, j);
 				board[i][j].add(n); // Initialize to a null string.
@@ -313,7 +358,7 @@ public class project1 {
 		// There is a down and an across BWC starting from each
 		// of these positions.
 		for (int i=0;i<5;i++) { // 12345 // row
-			for (int j=0;j<5;j++) {  //"abcde" // column
+			for (int j=0;j<5;j++) {  // "abcde" // column
 				//System.out.println("Adding bwcs for:"+i+","+j);
 				
 				// Down 
@@ -348,8 +393,8 @@ public class project1 {
 		// At this point board positions could calculate their own NumWordCombos score.
 		// 
 		// Trace
-		BoardPosition top = boardPositionsQueue.element();
-		System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
+		//BoardPosition top = boardPositionsQueue.element();
+		//System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
 	public void solve() {
 //		Boolean solved = false;
@@ -360,6 +405,15 @@ public class project1 {
 		// Get a letter
 		try {
 			BoardPosition top = boardPositionsQueue.remove();
+			System.out.println("Chose:"+top.x+","+top.y);
+			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+			for (BoardWordCombo i : top.boardWordCombos) {
+				System.out.println(i.x +","+ i.y+","+i.direction);
+			}
+			top.process();
+			
+			// Try next 
+			top = boardPositionsQueue.remove();
 			System.out.println("Chose:"+top.x+","+top.y);
 			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
 			for (BoardWordCombo i : top.boardWordCombos) {
