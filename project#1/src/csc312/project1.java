@@ -36,6 +36,9 @@ public class project1 {
     // To hold all BoardWordCombos
     public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
     
+    public HashMap<BoardPosition, Integer> tQueue = new HashMap<BoardPosition, Integer>();
+    public BoardPosition tQueueTop;
+    
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
 	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
@@ -262,29 +265,34 @@ public class project1 {
 					System.out.println("invalid combo!");
 					for (BoardPosition bp : bwc.letters ) {
 						//System.out.println("removing combo from bp:"+bp.x+","+bp.y);
-						dirty.add(bp);
 						if (bp == this) {
 							// Collect and remove
 							found.add(bwc);
 							continue; // Do this one after loop is complete.
 						}
+						dirty.add(bp);
 						bp.boardWordCombos.remove(bwc);
 					}
 				}
 			}
+			// Remove from this.
 			boardWordCombos.removeAll(found);
+			
 			// Update priority value for board positions.
+			//Set<BoardPosition> clean = new LinkedHashSet<BoardPosition>();
 			for (BoardPosition bp : dirty) {
 				bp.updateNumWordCombos();
 			}
-			// Remove from queue and re-add the dirty board positions.
+			updateNumWordCombos();
+			// Remove from queue and re-add the dirty board positions to update their priority.
+			// TODO: Consider better implementation.
+			// 		 Java priority queue does not support (nor optimize) updating priorities.
 			boardPositionsQueue.removeAll(dirty);
 			boardPositionsQueue.addAll(dirty);
+			// Remove last queue element and re-add to get queue to put top element on top again.
+			BoardPosition test = boardPositionsQueue.remove();
+			boardPositionsQueue.add(test);
 			
-			
-			// Check neighbors
-			// ... Or combos...
-			//ArrayList<>
 		}
 		public void addBWCs(BoardWordCombo bwc) {
 			boardWordCombos.add(bwc);
@@ -345,15 +353,27 @@ public class project1 {
 			numWordCombos = n;
 		}
 	}
+	public void showBoard() {
+		for (int i=0;i<5;i++) { // 12345
+			StringBuffer col = new StringBuffer();
+			for (int j=0;j<5;j++) {
+				BoardPosition bp = board[i][j].get(0);
+				col.append(bp.letter+""+bp.numWordCombos+" ");
+			}
+			System.out.println(col);
+		}
+	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
 			for (int j=0;j<5;j++) {  // "abcde":
 				board[i][j] = new ArrayList<BoardPosition>();
 				BoardPosition n = new BoardPosition(i, j);
 				board[i][j].add(n); // Initialize to a null string.
-				boardPositionsQueue.add(n); // Add to queue.
+				// Add to queue.
+				boardPositionsQueue.add(n);
 			}
 		}
+		
 		// Add a BoardWordCombo for i <= 2 and j <= 2.
 		// There is a down and an across BWC starting from each
 		// of these positions.
@@ -404,22 +424,36 @@ public class project1 {
 		
 		// Get a letter
 		try {
-			BoardPosition top = boardPositionsQueue.remove();
+			showBoard();
+			
+			BoardPosition top = boardPositionsQueue.poll();
 			System.out.println("Chose:"+top.x+","+top.y);
 			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-			for (BoardWordCombo i : top.boardWordCombos) {
-				System.out.println(i.x +","+ i.y+","+i.direction);
-			}
 			top.process();
 			
-			// Try next 
-			top = boardPositionsQueue.remove();
+			showBoard();
+			
+//			for (BoardPosition i : boardPositionsQueue) {
+//				System.out.println("bpq: "+i.x +","+ i.y+","+i.boardWordCombos.size());
+//			}
+			
+			// Try next
+			top = boardPositionsQueue.poll();
 			System.out.println("Chose:"+top.x+","+top.y);
 			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-			for (BoardWordCombo i : top.boardWordCombos) {
-				System.out.println(i.x +","+ i.y+","+i.direction);
-			}
 			top.process();
+			
+			showBoard();
+			
+			// Try next
+			top = boardPositionsQueue.poll();
+			System.out.println("Chose:"+top.x+","+top.y);
+			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+			top.process();
+			
+			showBoard();
+			
+			
 		} catch (Exception e) { // empty queue
 		
 		} 
