@@ -225,9 +225,25 @@ public class project1 {
 				quitGame(wordToCheck, letters.get(0).getBoardPos(), letters.get(2).getBoardPos());
 				return true;
 			} else if (wordPartsHashMap.containsKey(wordToCheck)) {
+				// If contains two letters, bump up last remaining
+				// letter to at or near top of queue.
+				numLettersRemaining();
 				return true;
 			} else {
 				return false;
+			}
+		}
+		public void numLettersRemaining() {
+			int x = 0;
+			BoardPosition tmp = null;
+			for (BoardPosition i : letters) {
+				if (i.getLetter() == '_') {
+					x+=1;
+					tmp = i;
+				}
+			}
+			if (x == 1) {
+				tmp.bumpPosInQueue = true;
 			}
 		}
 	}
@@ -245,6 +261,7 @@ public class project1 {
 		public Character letter;
 		public int numWordCombos;
 		public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
+		public Boolean bumpPosInQueue = false; // When two letters are found and this is the missing letter.
 		// Class constructor
 		BoardPosition (int row, int column) {
 			x = row;
@@ -258,7 +275,7 @@ public class project1 {
 		}
 		public void process() {
 			letter = getBoardLetter(gameNum, x+1, column_char);
-			System.out.println("Got:"+letter);
+			System.out.println("Got: "+letter);
 			// Process board word combos. Remove from BoardPositions.
 			List<BoardWordCombo> found = new ArrayList<BoardWordCombo>();
 			// Maintain a set of "dirty" board positions which
@@ -281,7 +298,6 @@ public class project1 {
 			boardWordCombos.removeAll(found);
 			
 			// Update priority value for board positions.
-			//Set<BoardPosition> clean = new LinkedHashSet<BoardPosition>();
 			for (BoardPosition bp : dirty) {
 				bp.updateNumWordCombos();
 			}
@@ -303,17 +319,15 @@ public class project1 {
 			return letter;
 		}
 		public void updateNumWordCombos() {
-			// Checks the neighbors to see if word combos still exist.
-			// e.g. _ _ _ = Yes. _ Z _ = No.
-		
-			// if x == 0 and y == 0
-			// 1) spots [0,1] [0,2] must form a word or be blank.
-			// 2) spots [1,0] [2,0] must form a word or be blank.
-			
-			// Question: What are the neighbors of this position?
-			// Possible combos...
 			numWordCombos = boardWordCombos.size();
-			// Tell queue to re-sort this.
+			if (bumpPosInQueue) {
+				// Question: How much to bump up?
+				// Answer: There was a neglible difference from 2-4.
+				// Conclusion: May not useful.
+				// numWordCombos += 4;
+				
+				// Do nothing.
+			}
 		}
 		/**
 		 * Initialize num word combos based on x, y position.

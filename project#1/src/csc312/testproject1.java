@@ -56,8 +56,9 @@ public class testproject1 {
 	
 	@Test
 	public void testAll() throws IOException {
-		project1 proj1 = new project1();
+		project1 proj1;
 		for (int i=1; i<4; i++) {
+			proj1 = new project1();
 			proj1.gameNum = i;
 			proj1.makeBoard();
 			// Populates priority queue
