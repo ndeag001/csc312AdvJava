@@ -196,13 +196,17 @@ public class project1 {
 		public int x;
 		public int y;
 		public int length = 3; // Default game word size.
+		public String direction;
 		// Three letters
 		public ArrayList<BoardPosition> letters = new ArrayList<BoardPosition>();
 		// Class constructor
-		BoardWordCombo (BoardPosition bp1, BoardPosition bp2, BoardPosition bp3) {
+		BoardWordCombo (BoardPosition bp1, BoardPosition bp2, BoardPosition bp3, int xx, int yy, String dir) {
 			letters.add(bp1);
 			letters.add(bp2);
 			letters.add(bp3);
+			x = xx;
+			y = yy;
+			direction = dir;
 		}
 		public Boolean legitimateWord() {
 			String wordToCheck = "" + letters.get(0).getLetter() + letters.get(1).getLetter() + letters.get(2).getLetter();
@@ -234,12 +238,13 @@ public class project1 {
 		public void process() {
 			Character l = getBoardLetter(gameNum, x, column_char);
 			letter = l;
+			System.out.println("Got:"+l);
 			// Check neighbors
 			// ... Or combos...
 		}
-		public void addBWCs(BoardWordCombo bwc1, BoardWordCombo bwc2) {
-			boardWordCombos.add(bwc1);
-			boardWordCombos.add(bwc2);
+		public void addBWCs(BoardWordCombo bwc) { //, BoardWordCombo bwc2
+			boardWordCombos.add(bwc);
+			//boardWordCombos.add(bwc2);
 		}
 		public Character getLetter() {
 			return letter;
@@ -304,32 +309,40 @@ public class project1 {
 				boardPositionsQueue.add(n); // Add to queue.
 			}
 		}
-		// Add a BoardWordCombos for i <= 2 and j <= 2.
-		// There is a down and an across BWC for each respective position.
-		for (int i=0;i<3;i++) { // 12345
-			for (int j=0;j<3;j++) {  //"abcde":
+		// Add a BoardWordCombo for i <= 2 and j <= 2.
+		// There is a down and an across BWC starting from each
+		// of these positions.
+		for (int i=0;i<5;i++) { // 12345 // row
+			for (int j=0;j<5;j++) {  //"abcde" // column
+				//System.out.println("Adding bwcs for:"+i+","+j);
+				
+				// Down 
+				// For col 0-4, row 0-2, add down-facing combos. 
+				if (i < 3) {
+					BoardWordCombo bwc1 = new BoardWordCombo(
+							board[i][j].get(0), board[i+1][j].get(0), board[i+2][j].get(0),
+							i, j, "down");
+					// Add global variable.
+					boardWordCombos.add(bwc1);
+					// Notify BoardPosition elements of their inclusion in BWCs.
+					board[i][j].get(0).addBWCs(bwc1);
+					board[i+1][j].get(0).addBWCs(bwc1);
+					board[i+2][j].get(0).addBWCs(bwc1);
+				}
+				
 				// Across
-				BoardWordCombo bwc1 = new BoardWordCombo(
-						board[i][j].get(0), board[i][j+1].get(0), board[i][j+2].get(0));
-				// Down
-				BoardWordCombo bwc2 = new BoardWordCombo(
-						board[i][j].get(0), board[i+1][j].get(0), board[i+2][j].get(0));
-				// Add BWCs to global variable.
-				boardWordCombos.add(bwc1);
-				boardWordCombos.add(bwc2);
-				// Notify BoardPosition elements of their inclusion in BWCs.
-				board[i][j].get(0).addBWCs(bwc1, bwc2);
-				board[i][j+1].get(0).addBWCs(bwc1, bwc2);
-				board[i][j+2].get(0).addBWCs(bwc1, bwc2);
-				board[i+1][j].get(0).addBWCs(bwc1, bwc2);
-				board[i+2][j].get(0).addBWCs(bwc1, bwc2);
-				
-//				board[i][j+1].get(0)
-//				board[i][j+2].get(0)
-//				board[i][j].get(0)
-//				board[i+1][j].get(0)
-//				board[i+2][j].get(0)
-				
+				// For row 0-4, col 0-2, add across-facing combos. 
+				if (j < 3) {
+					BoardWordCombo bwc2 = new BoardWordCombo(
+							board[i][j].get(0), board[i][j+1].get(0), board[i][j+2].get(0),
+							i, j, "across");
+					// Add global variable.
+					boardWordCombos.add(bwc2);
+					// Notify BoardPosition elements of their inclusion in BWCs.
+					board[i][j].get(0).addBWCs(bwc2);
+					board[i][j+1].get(0).addBWCs(bwc2);
+					board[i][j+2].get(0).addBWCs(bwc2);
+				}
 			}
 		}
 		// At this point board positions could calculate their own NumWordCombos score.
@@ -348,6 +361,10 @@ public class project1 {
 		try {
 			BoardPosition top = boardPositionsQueue.remove();
 			System.out.println("Chose:"+top.x+","+top.y);
+			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+			for (BoardWordCombo i : top.boardWordCombos) {
+				System.out.println(i.x +","+ i.y+","+i.direction);
+			}
 			top.process();
 		} catch (Exception e) { // empty queue
 		
