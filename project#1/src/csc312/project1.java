@@ -389,6 +389,7 @@ public class project1 {
 			}
 			System.out.println(col);
 		}
+		System.out.println("\n");
 	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
