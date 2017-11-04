@@ -225,15 +225,16 @@ public class project1 {
 				quitGame(wordToCheck, letters.get(0).getBoardPos(), letters.get(2).getBoardPos());
 				return true;
 			} else if (wordPartsHashMap.containsKey(wordToCheck)) {
-				// If contains two letters, bump up last remaining
-				// letter to at or near top of queue.
-				numLettersRemaining();
 				return true;
 			} else {
 				return false;
 			}
 		}
-		public void numLettersRemaining() {
+		/**
+		 * 
+		 * @return true to bump last remaining letter.
+		 */
+		public BoardPosition numLettersRemaining() {
 			int x = 0;
 			BoardPosition tmp = null;
 			for (BoardPosition i : letters) {
@@ -243,8 +244,12 @@ public class project1 {
 				}
 			}
 			if (x == 1) {
+				String w = "" + letters.get(0).getLetter() + letters.get(1).getLetter() + letters.get(2).getLetter();
+				System.out.println("Found 2/3 of a match:" +w);
 				tmp.bumpPosInQueue = true;
+				return tmp;
 			}
+			return null;
 		}
 	}
 	public void quitGame(String word, String s, String e) {
@@ -292,7 +297,13 @@ public class project1 {
 						dirty.add(bp);
 						bp.boardWordCombos.remove(bwc);
 					}
+					continue;
 				}
+				// Legitimate word.
+				// Test 2/3 completed and re-sort if so.
+				BoardPosition bp = bwc.numLettersRemaining();
+				if (bp != null)
+					dirty.add(bp);
 			}
 			// Remove from this instance of BoardPosition.
 			boardWordCombos.removeAll(found);
@@ -302,14 +313,18 @@ public class project1 {
 				bp.updateNumWordCombos();
 			}
 			updateNumWordCombos();
+			
 			// Remove from queue and re-add the dirty board positions to update their priority.
 			// TODO: Consider better implementation.
 			// 		 Java priority queue does not support (nor optimize) updating priorities.
 			boardPositionsQueue.removeAll(dirty);
 			boardPositionsQueue.addAll(dirty);
+			
 			// Remove last queue element and re-add to get queue to put top element on top again.
-			BoardPosition test = boardPositionsQueue.remove();
+			BoardPosition test = new BoardPosition(0,0);
+			test.numWordCombos = 999999;
 			boardPositionsQueue.add(test);
+			boardPositionsQueue.remove();
 			
 		}
 		public void addBWCs(BoardWordCombo bwc) {
@@ -325,9 +340,8 @@ public class project1 {
 				// Answer: There was a negligible difference when
 				//		   increasing priority queue score anywhere from 2-4 points.
 				// Conclusion: May not be useful.
-				// numWordCombos += 4;
+				numWordCombos += 4;
 				
-				// Do nothing.
 			}
 		}
 		/**

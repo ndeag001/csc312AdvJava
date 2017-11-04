@@ -57,6 +57,12 @@ public class testproject1 {
 	@Test
 	public void testAll() throws IOException {
 		project1 proj1;
+//		proj1 = new project1();
+//		proj1.gameNum = 2;
+//		proj1.makeBoard();
+//		// Populates priority queue
+//		proj1.getHmap();
+//		proj1.solve();
 		for (int i=1; i<4; i++) {
 			proj1 = new project1();
 			proj1.gameNum = i;
