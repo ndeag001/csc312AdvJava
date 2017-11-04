@@ -30,14 +30,14 @@ public class project1 {
 	public ArrayList<BoardPosition>[][] board = new ArrayList[5][5];
 	// For priority queue to decide which position to reveal.
 	public Comparator<BoardPosition> c = new BoardComparator();
-    public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
-    // To be updated by caller (default=1).
-    public int gameNum;
-    // To hold all BoardWordCombos
-    public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
-    // To hold boolean game over.
-    public Boolean solved = false;
-    
+	public PriorityQueue<BoardPosition> boardPositionsQueue = new PriorityQueue<BoardPosition>(10, c);
+	// To be updated by caller (default=1).
+	public int gameNum;
+	// To hold all BoardWordCombos
+	public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
+	// To hold boolean game over.
+	public Boolean solved = false;
+
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
 	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
