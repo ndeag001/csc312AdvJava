@@ -3,57 +3,36 @@ package csc312;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 import org.junit.Test;
 
 public class testproject1 {
 
 	
-	@Test
-	public void testValidURL() throws IOException {
-		
-		project1 proj1 = new project1();
-				
-		assertEquals( new Character('c'), proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" ) );
-		
-	}
 	
 
 	@Test
-	public void testHmap() throws IOException {
-		
-		project1 proj1 = new project1();
-		
-		String content = proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" );
-		
+	public void test500() throws IOException {
+		try {
+			project1 proj1 = new project1();
+			String z = proj1.getURL("https://wordfinder-001.appspot.com/wordfinder?game=1&pos=Z99");
+		}	
+		catch(IOException e){
+			assertEquals("java.io.IOException: Internal Server Error",e.toString());
+		}
+	}
+	
+	@Test
+	public void test403() throws IOException {
+		try {
+			project1 proj1 = new project1();
+			String z = proj1.getURL("https://wordfinder-001.appspot.com/wordfinder?game=1&pos=Z88");
+		}	
+		catch(IOException e){
+			assertEquals("java.io.IOException: Forbidden",e.toString());
+		}
+	}
 
-		assertEquals( new Character('c'), proj1.getURL( "https://wordfinder-001.appspot.com/word.txt" ) );
-		
-	}
-	
-	@Test
-	public void testLetterProbabilities() throws IOException {
-		
-		project1 proj1 = new project1();
-		
-		// Set wordsHashMap.
-		// Set letterProbaHashMap.
-		proj1.getHmap();
-		
-		System.out.println("The letter probabilities in the game are:\n"+proj1.letterProbaHashMap);
-				
-	}
-	
-	@Test
-	public void testMakeBoard() {
-		
-		project1 proj1 = new project1();
-		proj1.makeBoard();
-		System.out.println("The board is:\n"+proj1.board);
-	}
-	
 	@Test
 	public void testAll() throws IOException {
 		project1 proj1;
@@ -72,35 +51,27 @@ public class testproject1 {
 			proj1.solve();
 		}
 	}
+	
+	
 //	@Test
-//	public void testServerError() throws IOException {
+//	public void testLetterProbabilities() throws IOException {
 //		
 //		project1 proj1 = new project1();
-//				
-//		assertEquals( null, proj1.getURL( "https://wordfinder-001.appspot.com/wordfinder?game=2&pos=Z99" ) );
 //		
-//
+//		// Set wordsHashMap.
+//		// Set letterProbaHashMap.
+//		proj1.getHmap();
+//		
+//		//System.out.println("The letter probabilities in the game are:\n"+proj1.letterProbaHashMap);
+//				
 //	}
-//	
+	
 //	@Test
-//	public void testServerForbidden() throws IOException {
-//		
+//	public void testMakeBoard() {
 //		project1 proj1 = new project1();
-//				
-//		assertEquals( null, proj1.getURL( "https://wordfinder-001.appspot.com/wordfinder?game=2&pos=Z88" ) );
-//		
-//	
+//		proj1.makeBoard();
+//		//System.out.println("The board is:\n"+proj1.board);
 //	}
 //	
-//	@Test
-//	public void testInvalidDomain() throws IOException {
-//		
-//		project1 proj1 = new project1();
-//				
-//		assertEquals( null, proj1.getURL( "https://aninvaliddomainname.com" ) );
-//		
-//	
-//	}
-//	
-//
+	
 }

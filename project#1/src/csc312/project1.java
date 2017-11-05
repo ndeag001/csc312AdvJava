@@ -3,7 +3,6 @@ package csc312;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,25 +36,31 @@ public class project1 {
 	public ArrayList<BoardWordCombo> boardWordCombos = new ArrayList<BoardWordCombo>();
 	// To hold boolean game over.
 	public Boolean solved = false;
+	public Boolean isBroke = false;
 
 	//you must implement the function to retrieve the content of a specific URL at https://wordfinder-001.appspot.com/wordfinder
 	//
 	//be aware that at random  the  ResponseCode may be SC_INTERNAL_SERVER_ERROR  or SC_INTERNAL_SERVER_ERROR instead of SC_OK
 	//
-	public String getURL( String url) {
+	public String getURL( String url) throws IOException {
 		//char a = 5;
+		HttpURLConnection urlConnection = null ;
 		try {
 			URL myURL = new URL( url );
 		
-			HttpURLConnection urlConnection = (HttpURLConnection) myURL.openConnection();
+			urlConnection = (HttpURLConnection) myURL.openConnection();
 			
+			if (urlConnection.getResponseCode() != 200) {
+				//return getURL(url);
+				
+			}
 			// Set timeout to 4 seconds
 			// Then quit and try again.
-			urlConnection.setConnectTimeout(4000);
-			urlConnection.setReadTimeout(4000);
-			if (urlConnection.getResponseCode() != 200) {
-				return getURL(url);
-			}
+//			urlConnection.setConnectTimeout(4000);
+//			urlConnection.setReadTimeout(4000);
+//			if (urlConnection.getResponseCode() != 200) {
+//				return getURL(url);
+//			}
 //			System.out.println( "requestMethod:"  + urlConnection.getRequestMethod() );
 //			System.out.println( "responseCode:"  + urlConnection.getResponseCode()); //404 !!, 200 -> OK
 //			System.out.println( "message:"  + urlConnection.getResponseMessage()); 
@@ -74,22 +79,18 @@ public class project1 {
 			
 		
 			is.close();
-		//	System.out.println(output.toString());
 			return output.toString();
-//			System.out.println(hmap);
-//			return hmap;
 			
 			
 	
 //		} catch (MalformedURLException e) {
 //		    return null;
-//		} catch (IOException e) {
-//			return null;
+		} catch (IOException e) {
+			String i = urlConnection.getResponseMessage();
+			throw new IOException(i);
 		} catch (Exception e) {
-			System.out.println(e);
-			System.out.println(url);
-			return getURL(url);
 		}
+		return null;
 	}
 	/**
 	 * This function does the initial word things for a game.
@@ -101,7 +102,13 @@ public class project1 {
 	 * @throws IOException
 	 */
 	public void getHmap() {
-		String content = getURL( "https://wordfinder-001.appspot.com/word.txt" );
+		String content = null;
+		try {
+				content = getURL( "https://wordfinder-001.appspot.com/word.txt" );
+		}
+		catch(Exception e) {
+			System.out.println("This is never suppose to happen according to your requirements.");
+		}
 		StringTokenizer tokenizer = new StringTokenizer( content, "\n" );
 		while ( tokenizer.hasMoreTokens() ) {
 			String tk = tokenizer.nextToken().trim();
@@ -118,12 +125,11 @@ public class project1 {
 				// probabilities associated with that word.
 				continue;
 			}
-			// Add letters of the word to probabilites hashmap.
+			// Add letters of the word to probabilities hashmap.
 			wordDictProbaAddLetters(tk);
 		}
 		// Calculate probabilities.
 		wordDictProbaCalculate();
-		//System.out.println("There are "+wordPartsHashMap.size()+" possible word combinations");
 	}
 
 	/**
@@ -142,12 +148,12 @@ public class project1 {
 	 *  Note: Strings beginning with w.charAt(0) must begin instead with "".
 	 */
 	public void wordPartsAdd(String w) {
-		// One letter
+		// One letter Found
 		wordPartsHashMap.put(""+w.charAt(0) + "__", null);
 		wordPartsHashMap.put("_" + w.charAt(1) + "_", null);
 		wordPartsHashMap.put("__" + w.charAt(2), null);
 		
-		// Two letters
+		// Two letters Found
 		wordPartsHashMap.put(""+w.charAt(0) + w.charAt(1) + "_", null);
 		wordPartsHashMap.put(""+w.charAt(0) + "_" + w.charAt(2), null);
 		wordPartsHashMap.put("_" + w.charAt(1) + w.charAt(2), null);
@@ -245,13 +251,15 @@ public class project1 {
 			}
 			if (x == 1) {
 				String w = "" + letters.get(0).getLetter() + letters.get(1).getLetter() + letters.get(2).getLetter();
-				System.out.println("Found 2/3 of a match:" +w);
+				//System.out.println("Found 2/3 of a match:" +w);
 				tmp.bumpPosInQueue = true;
 				return tmp;
 			} else if (x==2) {
-				// One letter found out of three.
-				// This could bump up the BoardPosition's queue value
-				// by half as much as when 2/3 letters are found. 
+				/* One letter found out of three.
+				 This could bump up the BoardPosition's queue value
+				 by half as much as when 2/3 letters are found.
+				 However when doing testing it does not seem to effect the solve rate of the games.
+				*/ 
 			}
 			return null;
 		}
@@ -260,9 +268,7 @@ public class project1 {
 		System.out.println("game"+gameNum+" word:"+word+" location:"+s+"-"+e);
 		solved = true;
 	}
-	/**
-	 * 
-	 */
+	
 	public class BoardPosition {
 		public int x; // row
 		public int y; // column
@@ -284,7 +290,7 @@ public class project1 {
 		}
 		public void process() {
 			letter = getBoardLetter(gameNum, x+1, column_char);
-			System.out.println("Got: "+letter);
+			//System.out.println("Got: "+letter);
 			// Process board word combos. Remove from BoardPositions.
 			List<BoardWordCombo> found = new ArrayList<BoardWordCombo>();
 			// Maintain a set of "dirty" board positions which
@@ -389,9 +395,9 @@ public class project1 {
 				BoardPosition bp = board[i][j].get(0);
 				col.append(bp.letter+""+bp.numWordCombos+" ");
 			}
-			System.out.println(col);
+			//System.out.println(col);
 		}
-		System.out.println("\n");
+		//System.out.println("\n");
 	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
@@ -439,125 +445,57 @@ public class project1 {
 				}
 			}
 		}
-		// At this point board positions could calculate their own NumWordCombos score.
-		// 
-		// Trace
-		//BoardPosition top = boardPositionsQueue.element();
-		//System.out.println("Top of queue is:" + top.x +","+ top.y +" "+ top.numWordCombos);
 	}
 	public void solve() {
 		showBoard();
-		while (boardPositionsQueue.size() > 0 && !solved) {
+		int numChoices = 0;
+		BoardPosition top = null;
+		while (boardPositionsQueue.size() > 0 && !solved && !isBroke) {
 			//showBoard();
 			
-			BoardPosition top = boardPositionsQueue.poll();
+			top = boardPositionsQueue.poll();
 			if (top != null && top.boardWordCombos.size() > 0) {
-				System.out.println("Chose:"+top.getBoardPos());
-				System.out.println("Having #BWCs: "+top.boardWordCombos.size());
+				//System.out.println("Chose:"+top.getBoardPos());
+				//System.out.println("Having #BWCs: "+top.boardWordCombos.size());
 				top.process();
+				numChoices++;
 				
 				showBoard();
 			} else {
 				break;
 			}
 		}
-		
-		// Get a letter
-//		try {
-//			showBoard();
-//			
-//			BoardPosition top = boardPositionsQueue.poll();
-//			System.out.println("Chose:"+top.x+","+top.y);
-//			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-//			top.process();
-//			
-//			showBoard();
-//			
-////			for (BoardPosition i : boardPositionsQueue) {
-////				System.out.println("bpq: "+i.x +","+ i.y+","+i.boardWordCombos.size());
-////			}
-//			
-//			// Try next
-//			top = boardPositionsQueue.poll();
-//			System.out.println("Chose:"+top.x+","+top.y);
-//			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-//			top.process();
-//			
-//			showBoard();
-//			
-//			// Try next
-//			top = boardPositionsQueue.poll();
-//			System.out.println("Chose:"+top.x+","+top.y);
-//			System.out.println("Having #BWCs: "+top.boardWordCombos.size());
-//			top.process();
-//			
-//			showBoard();
-//			
-//			
-//		} catch (Exception e) { // empty queue
-//		
-//		} 
+		if (isBroke==false) {
+			System.out.println("It took "+numChoices+" to solve the game.");
+		}
+		else {
+			System.out.println("A letter in the game could not be downloaded after 5 tries. So we are giving up on solving game"+gameNum+".");
+		}
+		 
 	}
 	public Character getLetter(int row,char column) {
 		
 		return null;
 	}
-	public Boolean Game ( Integer gameNum ) throws IOException {
-		// Two arrays, each containing 5 string buffers.
-		StringBuffer[] column = new StringBuffer[5];
-		StringBuffer[] rowSB = new StringBuffer[5];
-		ArrayList<String> checks = new ArrayList<String>();
-		String colLetters = "abcde";
-		//HashMap<String, String> hmap = getHmap();
-		int a = 0;
-		while(a<22) {
-			a++;
-			outerloop:
-				
-			for (int i=1;i<6;i=i+2) { // 12345
-				for (int j=1;j<6;j=j+2) {  //"abcde":
-					checks.add(String.format("%2d,%2d",i,j));
-					
-					
-					
-				}
-				
-				
-			}
-		
-			
-//					Character L = getBoardLetter(gameNum, i, colLetters.charAt(j));
-//					// Append letter to the respective string buffers.
-//					column[j].append(L);
-//					rowSB[i].append(L);
-//					if (Character.isUpperCase(L)){break outerloop;}
-//					else {
-//						L = getBoardLetter(gameNum, i, colLetters.charAt(j+2));
-//						if (Character.isUpperCase(L)){break outerloop;}
-//					}
-					
-//				w = test_success(cols[col], hmap)
-//				if w:
-//					do_success(w);
-//					return; // End
-//				rowSB[i].append(L);
-//				w = test_success(rows[row], hmap);
-//				if w:
-//					do_success(w);
-//					return; // End
-			}
-		System.out.println(checks);
-		return null;
-		}
-		// Still here? Then no word has been found!
-		// Print fail string or something.
-//	}
 
 	public Character getBoardLetter(int gameNum, int row, char col) {
-		
-		String v = getURL("https://wordfinder-001.appspot.com/wordfinder?game="+gameNum+"&pos="+col+row);
-		
-		return v.charAt(0);
+		String v = null;
+		for(int i=0;i<5;i++) {
+			try{
+				v = getURL("https://wordfinder-001.appspot.com/wordfinder?game="+gameNum+"&pos="+col+row);
+				//return v.charAt(0);
+				//break;
+			}
+			catch(Exception e){
+				//System.out.println("Bad letter trying again.");
+				continue;
+			}
+			return v.charAt(0);
+			
+		}
+		isBroke = true;
+		return null;
+		// If this gets reached then it tried five times and did not work. But the requirements do not specify what to do at this point.
 	}
 
 	public String test_success(String string_to_test,HashMap<String, String> hmap) {
