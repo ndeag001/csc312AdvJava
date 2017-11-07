@@ -348,8 +348,7 @@ public class project1 {
 				// Answer: There was a negligible difference when
 				//		   increasing priority queue score anywhere from 2-4 points.
 				// Conclusion: May not be useful.
-				numWordCombos += 4;
-				
+				numWordCombos += 5;
 			}
 		}
 		/**
@@ -393,7 +392,9 @@ public class project1 {
 			StringBuffer col = new StringBuffer();
 			for (int j=0;j<5;j++) {
 				BoardPosition bp = board[i][j].get(0);
-				col.append(bp.letter+""+bp.numWordCombos+" ");
+				int x = bp.boardWordCombos.size();
+				x = (x > 0) ? bp.numWordCombos : 0; // If no more combos then show 0.
+				col.append(bp.letter+""+x+" ");
 			}
 			System.out.println(col);
 		}
