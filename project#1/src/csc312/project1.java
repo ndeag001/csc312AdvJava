@@ -395,9 +395,9 @@ public class project1 {
 				BoardPosition bp = board[i][j].get(0);
 				col.append(bp.letter+""+bp.numWordCombos+" ");
 			}
-			//System.out.println(col);
+			System.out.println(col);
 		}
-		//System.out.println("\n");
+		System.out.println("\n");
 	}
 	public void makeBoard() {
 		for (int i=0;i<5;i++) { // 12345
@@ -451,15 +451,12 @@ public class project1 {
 		int numChoices = 0;
 		BoardPosition top = null;
 		while (boardPositionsQueue.size() > 0 && !solved && !isBroke) {
-			//showBoard();
-			
 			top = boardPositionsQueue.poll();
 			if (top != null && top.boardWordCombos.size() > 0) {
 				//System.out.println("Chose:"+top.getBoardPos());
 				//System.out.println("Having #BWCs: "+top.boardWordCombos.size());
 				top.process();
 				numChoices++;
-				
 				showBoard();
 			} else {
 				break;
