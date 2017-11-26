@@ -12,6 +12,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
+import csc312.servlet.NewContest;
 import csc312.servlet.Contest;
 import csc312.servlet.GoodBye;
 import csc312.servlet.HelloWorld;
@@ -20,6 +21,8 @@ import csc312.servlet.Words;
 public class Main {
 
 	public static HashMap<String, Character> boardHashMap1 = new HashMap<String, Character>();
+	public static HashMap<Integer, Long> contestIDHashMap = new HashMap<Integer, Long>();
+	
 	//public static Integer arrayContestId [] = new Integer[1000];
 	public static ArrayList<Integer> arrayContestId = new ArrayList<Integer>(1000);
 	// public static allGames[contestId] = <Game>
@@ -50,9 +53,35 @@ public class Main {
 	
 	public static void main(String[] args)
     		  throws LifecycleException, InterruptedException, ServletException {
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');			//  board 1 is     A B C t D
+		boardHashMap1.put("a1",'A');			//        		   E F G a H
+		boardHashMap1.put("a1",'A');			//                 I J K x L
+		boardHashMap1.put("a1",'A');			//				   M N O P Q
+		boardHashMap1.put("a1",'A');			//                 R S T U V
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		boardHashMap1.put("a1",'A');
+		
 
 		Tomcat tomcat = new Tomcat();
-	    tomcat.setPort(8082);
+	    tomcat.setPort(8080);
 	    
 	    //https://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
 	    for (int a = 1; a < 1001; a++) {
@@ -72,7 +101,8 @@ public class Main {
 	    Tomcat.addServlet(ctx, "hello", new HelloWorld() );
 	    Tomcat.addServlet(ctx, "bye", new GoodBye() );
 	    Tomcat.addServlet(ctx, "words", new Words() );
-	    Tomcat.addServlet(ctx, "newcontest", new Contest() );
+	    Tomcat.addServlet(ctx, "newcontest", new NewContest() );
+	    Tomcat.addServlet(ctx, "contest", new Contest() );
 		    
 	    //1st parameter, is what url are handled by this serlvet, 2nd parameter, 
 	    //the name of the servlet handling it
@@ -80,9 +110,9 @@ public class Main {
 	    ctx.addServletMapping("/goodbye", "bye");
 	    ctx.addServletMapping("/words", "words");
 	    ctx.addServletMapping("/newcontest", "newcontest");
-	    
+	    ctx.addServletMapping("/contest", "contest");
 	    // Servlet starts at e.g.
-	    // http://localhost:8082/words
+	    // http://localhost:8080/words
 	    tomcat.start();
 	    tomcat.getServer().await();
 	    
