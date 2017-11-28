@@ -39,6 +39,7 @@ public class NewContest extends HttpServlet {
     	resp.setStatus( HttpServletResponse.SC_OK);
     	Integer ID = csc312.Main.arrayContestId.remove(0);
     	csc312.Main.contestIDHashMap.put(ID,System.currentTimeMillis());
+    	csc312.Main.contestIDNumRequestsHashMap.put(ID,0);
     	//Integer S = csc312.Main.arrayContestId.size();
 //    	HttpSession mySession = req.getSession();
     	
