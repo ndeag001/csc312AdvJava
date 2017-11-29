@@ -35,8 +35,8 @@ public class Main {
 	//public static Comparator<Long> c = new TopScoreComparator();
 	public static ArrayList<Long> topScore = new ArrayList<Long>(5);
 	public static String Solution1 = "tax";
-	public static String Solution2 = "";
-	public static String Solution3 = "";
+	public static String Solution2 = "bee";
+	public static String Solution3 = "tux";
 	
 	
 	//public static Integer arrayContestId [] = new Integer[1000];
@@ -66,6 +66,11 @@ public class Main {
 	 *   
 	 *   most will use a framework such as Spring MVC, based on a URL, what to do, control the processing, and what to show the user 
 	 */
+	
+	public static void generateBoards() {
+		
+		
+	}
 	
 	public static void main(String[] args)
     		  throws LifecycleException, InterruptedException, ServletException, NumberFormatException, IOException {

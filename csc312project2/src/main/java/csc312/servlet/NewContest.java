@@ -56,7 +56,7 @@ public class NewContest extends HttpServlet {
     	//
         ServletOutputStream out = resp.getOutputStream();
         out.write(ID.toString().getBytes());
-        out.write("\n".getBytes());
+        //out.write("\n".getBytes());
 //        out.write(x.toString().getBytes());
         //out.write("\n".getBytes());
         //out.write(S.toString().getBytes());
