@@ -37,20 +37,12 @@ public class Contest extends HttpServlet {
     	//
     	//the browser will react based on the status code such as: to display the content, redirect to the alternate url, display an error page
     	resp.setStatus( HttpServletResponse.SC_OK);
-    	//Integer ID = csc312.Main.arrayContestId.remove(0);
-    	//Integer S = csc312.Main.arrayContestId.size();
-//    	HttpSession mySession = req.getSession();
-    	
-    	//HttpSession session = request.getSession(false);
 
-//    	Long x = mySession.getCreationTime();
     	Long y = System.currentTimeMillis();
     	Integer strGame = Integer.valueOf(req.getParameter("game"));
         String strPos = req.getParameter("pos");
         String strContest = req.getParameter("contest");
     	Long x = csc312.Main.contestIDHashMap.get(Integer.valueOf(strContest));
-//    	out.write(x.toString().getBytes());
-//    	out.write(y.toString().getBytes());
     	if (strGame != 1 && strGame != 2 && strGame != 3) {resp.setStatus( HttpServletResponse.SC_BAD_REQUEST);}
     	else if (csc312.Main.boardHashMap1.get(strPos) == null ) {resp.setStatus( HttpServletResponse.SC_BAD_REQUEST);}
     	else if (x == null ) {resp.setStatus( HttpServletResponse.SC_BAD_REQUEST);}

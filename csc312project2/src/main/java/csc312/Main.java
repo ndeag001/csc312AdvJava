@@ -1,7 +1,11 @@
 package csc312;
 
 import java.awt.List;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +19,7 @@ import org.apache.catalina.startup.Tomcat;
 
 import csc312.servlet.NewContest;
 import csc312.servlet.Solution;
+import csc312.servlet.TopScore;
 import csc312.servlet.Contest;
 import csc312.servlet.GoodBye;
 import csc312.servlet.HelloWorld;
@@ -63,7 +68,7 @@ public class Main {
 	 */
 	
 	public static void main(String[] args)
-    		  throws LifecycleException, InterruptedException, ServletException {
+    		  throws LifecycleException, InterruptedException, ServletException, NumberFormatException, IOException {
 		boardHashMap1.put("a1",'A');            //                  a b c d e
 		boardHashMap1.put("b1",'B');			//  board 1 is   1  A B C t D
 		boardHashMap1.put("c1",'C');			//        		 2  E F G a H
@@ -151,6 +156,20 @@ public class Main {
 	    }
 	    Collections.shuffle(arrayContestId);
 	    
+	    String filePath = new File("").getAbsolutePath();
+	    BufferedReader r = new BufferedReader(new FileReader(filePath + "/src/main/topscore.txt"));                        
+        String line = null;         
+        while ((line = r.readLine()) != null)
+        {
+        	topScore.add(Long.valueOf(line.trim()));
+        	  
+        }
+        r.close();
+          	//out.write(line.getBytes());
+          	//out.write("\n".getBytes());
+          
+	    
+	    
 	    //System.out.println(arrayContestId);
 	    //System.out.println("hello");
 	    
@@ -166,6 +185,7 @@ public class Main {
 	    Tomcat.addServlet(ctx, "newcontest", new NewContest() );
 	    Tomcat.addServlet(ctx, "contest", new Contest() );
 	    Tomcat.addServlet(ctx, "solution", new Solution() );
+	    Tomcat.addServlet(ctx, "topscore", new TopScore() );
 		    
 	    //1st parameter, is what url are handled by this serlvet, 2nd parameter, 
 	    //the name of the servlet handling it
@@ -175,9 +195,10 @@ public class Main {
 	    ctx.addServletMapping("/newcontest", "newcontest");
 	    ctx.addServletMapping("/contest", "contest");
 	    ctx.addServletMapping("/solution", "solution");
+	    ctx.addServletMapping("/topscore", "topscore");
 	    
 	    // Servlet starts at e.g.
-	    // http://localhost:8081/words
+	    // http://localhost:8082/words
 	    tomcat.start();
 	    tomcat.getServer().await();
 	    
